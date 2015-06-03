@@ -190,6 +190,30 @@ class CleantalkRequest {
      * @var string
      */
      public $all_headers = null;
+     
+     /**
+     *  IP address of connection
+     * @var string
+     */
+     //public $remote_addr = null;
+     
+     /**
+     *  Last error number
+     * @var integer
+     */
+     public $last_error_no = null;
+     
+     /**
+     *  Last error time
+     * @var integer
+     */
+     public $last_error_time = null;
+     
+     /**
+     *  Last error text
+     * @var string
+     */
+     public $last_error_text = null;
 
     /**
      * User message
@@ -671,6 +695,11 @@ class Cleantalk {
     private function httpRequest($msg) {
         $result = false;
         $msg->all_headers=json_encode(apache_request_headers());
+        //$msg->remote_addr=$_SERVER['REMOTE_ADDR'];
+        //$msg->sender_info['remote_addr']=$_SERVER['REMOTE_ADDR'];
+        $si=json_decode($msg->sender_info,true);
+        $si['remote_addr']=$_SERVER['REMOTE_ADDR'];
+        $msg->sender_info=json_encode($si);
         if (((isset($this->work_url) && $this->work_url !== '') && ($this->server_changed + $this->server_ttl > time()))
 				|| $this->stay_on_server == true) {
 	        
@@ -1061,7 +1090,6 @@ function sendRawRequest($url,$data,$isJSON=false,$timeout=3)
 
 if( !function_exists('apache_request_headers') )
 {
-
 	function apache_request_headers()
 	{
 		$arh = array();
@@ -1084,5 +1112,3 @@ if( !function_exists('apache_request_headers') )
 		return( $arh );
 	}
 }
-
-?>
